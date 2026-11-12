@@ -297,3 +297,16 @@ test('browser_run_code_unsafe with filename containing template literals', async
   const content = await consoleEntries(response);
   expect(content).toContain('[LOG] Done');
 });
+
+test('browser_run_code_unsafe requires code or filename', {
+  annotation: { type: 'issue', description: 'https://github.com/microsoft/playwright/issues/44080' },
+}, async ({ client }) => {
+  const response = await client.callTool({
+    name: 'browser_run_code_unsafe',
+    arguments: {},
+  });
+  expect(response).toHaveResponse({
+    isError: true,
+    error: 'Error: At least one of "code" or "filename" must be provided.',
+  });
+});
